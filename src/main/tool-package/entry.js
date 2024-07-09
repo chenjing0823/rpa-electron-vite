@@ -106,7 +106,7 @@ const handleEnter = async (val) => {
  */
 const handleStart = async (target) => {
   if (target) {
-      _mainWindow = target
+    _mainWindow = target
   }
   if (target && target.val && target.val.length) {
     await handleEnter(target.val)
