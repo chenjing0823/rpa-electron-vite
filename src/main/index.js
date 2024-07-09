@@ -3,8 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
-// const handleStart = require('./tool-package/entry.js')
-import handleStart from './tool-package/entry.js'
+import { handleStart } from './tool-package/entry.js'
 import checkhotarea from './tool-package/check-hot-area.js'
 
 import { setRunningStatus, setCheckhotareaStatus } from './tool-package/globals.js'

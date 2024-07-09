@@ -138,4 +138,4 @@ const handleStart = async (target) => {
   }
 }
 
-export default handleStart
+export { handleStart }
