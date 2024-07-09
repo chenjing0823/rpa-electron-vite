@@ -1,6 +1,6 @@
-const { screen, RGBA, pixelWithColor } = require('@nut-tree-fork/nut-js')
+const { screen, pixelWithColor } = require('@nut-tree-fork/nut-js')
 
-import { getType, get_a_b_width } from './globals.js'
+import { get_app_config } from './globals.js'
 
 const findContinuousRegions = (points) => {
   let visited = {}
@@ -42,24 +42,9 @@ const findContinuousRegions = (points) => {
   return regions
 }
 
-/**
- * @description: 判单软件类型，获取对应软件未读消息颜色
- * @returns
- */
-const getColor = () => {
-  if (getType() === 'win-ding') {
-    return new RGBA(255, 0, 0, 255)
-  } else if (getType() === 'win-wx') {
-    return new RGBA(240, 74, 62, 255)
-  }
-}
-
-const deRedClick = async () => {
-  const colorToSearch = getColor()
-  // const pixColor = pixelWithColor(colorToSearch);
-  // console.log('pixColor', pixColor)
-
-  // let colorLocation = null
+const doRedClick = async () => {
+  const { a, b, m } = get_app_config()
+  const colorToSearch = m
   let colorLocationAll = null
   try {
     // colorLocation = await screen.find(pixelWithColor(colorToSearch));
@@ -80,8 +65,8 @@ const deRedClick = async () => {
       // console.log(`第${index + 1}个红点，位置在${posDesc}, 红点大小为：${length}`)
       // console.log(posX > 130 ? '是消息列表' : '不是消息列表')
       // 免打扰的小点 length = 27
-      const { a, b } = get_a_b_width()
       if (posX > a && posX < a + b && length > 30) {
+        // 位置大于功能列宽，小于功能列宽+消息列宽，并且长度大于30
         allRedPoint.push(point[0])
       }
     })
@@ -98,6 +83,6 @@ const deRedClick = async () => {
   }
 }
 
-// deRedClick()
+// doRedClick()
 
-export default deRedClick
+export default doRedClick
