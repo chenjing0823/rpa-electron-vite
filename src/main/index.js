@@ -75,8 +75,9 @@ app.whenReady().then(() => {
     }
     mainWindow.webContents.send('update-checkhotarea', !isCheck)
   })
-  ipcMain.on('api-getclipboardy', (event, val) => {
-    handleStart({ mainWindow, val })
+  ipcMain.on('api-other', (event, val) => {
+    console.log('val', val)
+    console.log('event', event)
   })
 
   createWindow()

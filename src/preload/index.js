@@ -6,7 +6,7 @@ const api = {
   apiStart: () => ipcRenderer.send('api-start'),
   apiStop: () => ipcRenderer.send('api-stop'),
   apiCheckhotarea: (val) => ipcRenderer.send('api-checkhotarea', val),
-  apiGetclipboardy: (val) => ipcRenderer.send('api-getclipboardy', val)
+  apiOther: (val) => ipcRenderer.send('api-other', val)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
@@ -17,8 +17,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
     contextBridge.exposeInMainWorld('electronAPI', {
-      getClipboardy: (callback) =>
-        ipcRenderer.on('get-clipboardy', (_event, value) => callback(value)),
+      getOther: (callback) => ipcRenderer.on('get-other', (_event, value) => callback(value)),
       onUpdateCounter: (callback) =>
         ipcRenderer.on('update-counter', (_event, value) => callback(value)),
       onUpdatePath: (callback) => ipcRenderer.on('update-path', (_event, value) => callback(value)),
