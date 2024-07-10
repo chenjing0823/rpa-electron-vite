@@ -14,6 +14,7 @@ const {
 } = require('@nut-tree-fork/nut-js')
 
 import doRedClick from './red-click.js'
+import iconv from 'iconv-lite'
 import { getRunningStatus, get_app_config } from './globals.js'
 
 screen.config.resourceDirectory = __dirname
@@ -44,6 +45,14 @@ const moveToMessage = async () => {
   await keyboard.releaseKey(Key.LeftControl, Key.C)
   await clipboardDataFormat()
 
+  await handleInput()
+}
+
+async function handleInput() {
+  const test = iconv.encode('你好', 'gbk')
+  console.log(test)
+  const test2 = iconv.decode(test, 'gbk')
+  console.log(test2)
   // 激活输入框 输入内容并发送
   await mouse.move(right(100))
   await mouse.move(up(100))
