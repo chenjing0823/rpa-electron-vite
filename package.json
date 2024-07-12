@@ -24,6 +24,7 @@
     "@nut-tree-fork/nut-js": "^4.2.1",
     "copy-paste": "^1.5.3",
     "electron-updater": "^6.1.7",
+    "element-plus": "^2.7.6",
     "iconv-lite": "^0.6.3"
   },
   "devDependencies": {
@@ -37,6 +38,8 @@
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.26.0",
     "prettier": "^3.3.2",
+    "unplugin-auto-import": "^0.18.0",
+    "unplugin-vue-components": "^0.27.2",
     "vite": "^5.3.1",
     "vue": "^3.4.30"
   },

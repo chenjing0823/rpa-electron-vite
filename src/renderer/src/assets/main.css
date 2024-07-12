@@ -30,7 +30,6 @@ code {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  margin-bottom: 80px;
 }
 
 .logo {
@@ -88,6 +87,12 @@ code {
   justify-content: flex-start;
 }
 
+.adjust-block {
+  color: #969799;
+  padding-top: 20px;
+  height: 52px;
+}
+
 .action {
   flex-shrink: 0;
   padding: 6px;
@@ -122,6 +127,18 @@ code {
   position: absolute;
   bottom: 0px;
   left: 10px;
+}
+
+.hot-area-check {
+  display: flex;
+  gap: 8px;
+}
+
+.adjust-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 

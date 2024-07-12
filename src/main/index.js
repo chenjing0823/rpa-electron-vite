@@ -6,7 +6,7 @@ import icon from '../../resources/icon.png?asset'
 import { handleStart } from './tool-package/entry.js'
 import checkhotarea from './tool-package/check-hot-area.js'
 
-import { setRunningStatus, setCheckhotareaStatus } from './tool-package/globals.js'
+import { setRunningStatus, setCheckhotareaStatus, get_app_config, set_app_config } from './tool-package/globals.js'
 
 let mainWindow
 function createWindow() {
@@ -67,13 +67,21 @@ app.whenReady().then(() => {
     setRunningStatus(false)
     mainWindow.webContents.send('update-counter', false)
   })
-  ipcMain.on('api-checkhotarea', (event, isCheck) => {
-    console.log('isCheck', isCheck)
-    setCheckhotareaStatus(!isCheck)
-    if (!isCheck) {
-      checkhotarea()
+  ipcMain.on('api-checkhotarea', (event, { type, val }) => {
+    if (type === 'flag') {
+      setCheckhotareaStatus(!val)
+      if (!val) {
+        checkhotarea()
+      }
+      const { a, b, t } = get_app_config()
+      mainWindow.webContents.send('update-checkhotarea', { flag: !val, a, b, t })
+    } else if (type === 'a') {
+      set_app_config({ key: 'a', value: val })
+    } else if (type === 'b') {
+      set_app_config({ key: 'b', value: val })
+    } else if (type === 't') {
+      set_app_config({ key: 't', value: val })
     }
-    mainWindow.webContents.send('update-checkhotarea', !isCheck)
   })
   ipcMain.on('api-other', (event, val) => {
     console.log('val', val)

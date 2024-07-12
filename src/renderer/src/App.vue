@@ -1,16 +1,23 @@
 <script setup>
 import versions from './components/Versions.vue'
+import HotAreaCheck from './components/hot-area-check.vue'
 import { ref, computed } from 'vue'
 
 const checkhotarea = ref(false)
 const path = ref('')
+const a_width = ref(0)
+const b_width = ref(0)
+const t_height = ref(0)
 // const clip = ref('')
 const showText = computed(() => {
   return checkhotarea.value ? '关闭热区检查' : '开启热区检查'
 })
 
 window.electronAPI.onUpdateCheckhotarea((value) => {
-  checkhotarea.value = value
+  checkhotarea.value = value.flag
+  a_width.value = value.a
+  b_width.value = value.b
+  t_height.value = value.t
 })
 window.electronAPI.onUpdatePath((value) => {
   path.value = value
@@ -18,7 +25,7 @@ window.electronAPI.onUpdatePath((value) => {
 
 const ipcHandleSend = () => window.api.apiStart()
 const ipcHandleStop = () => window.api.apiStop()
-const ipcHandleCheckhotarea = (val) => window.api.apiCheckhotarea(val)
+const ipcHandleCheckhotarea = (val) => window.api.apiCheckhotarea({ type: 'flag', val: val })
 </script>
 
 <template>
@@ -37,6 +44,13 @@ const ipcHandleCheckhotarea = (val) => window.api.apiCheckhotarea(val)
       }}</a>
     </div>
   </div>
-  <div style="color: black">截图路径: {{ path }}</div>
+  <div class="adjust-block">
+    <HotAreaCheck
+      v-if="checkhotarea"
+      :a-width="a_width"
+      :b-width="b_width"
+      :t-height="t_height"
+    ></HotAreaCheck>
+  </div>
   <versions />
 </template>

@@ -9,7 +9,7 @@ let isCheckhotarea = false
 // let m_color = new RGBA(255, 0, 0, 255)
 
 let type = 'win-wx'
-let a_width = 58
+let a_width = 60
 let b_width = 268
 let t_height = 62
 let m_color = new RGBA(240, 74, 62, 255)
@@ -30,6 +30,16 @@ export const get_app_config = () => {
     b: b_width,
     t: t_height,
     m: m_color
+  }
+}
+
+export const set_app_config = ({ key, value }) => {
+  if (key === 'a') {
+    a_width = value
+  } else if (key === 'b') {
+    b_width = value
+  } else if (key === 't') {
+    t_height = value
   }
 }
 
