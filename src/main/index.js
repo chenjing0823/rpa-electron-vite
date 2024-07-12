@@ -58,14 +58,18 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
-  ipcMain.on('api-start', () => {
-    setRunningStatus(true)
-    handleStart({ mainWindow })
-    mainWindow.webContents.send('update-counter', true)
+  ipcMain.on('api-start', (event, val) => {
+    console.log('api-start', val)
+    setRunningStatus(!val)
+    mainWindow.webContents.send('update-start', !val)
+    if (!val) {
+      // startFlag
+      handleStart({ mainWindow })
+    }
   })
-  ipcMain.on('api-stop', () => {
-    setRunningStatus(false)
-    mainWindow.webContents.send('update-counter', false)
+  ipcMain.on('api-pull-group', () => {
+    // setRunningStatus(false)
+    mainWindow.webContents.send('update-pull-group', false)
   })
   ipcMain.on('api-checkhotarea', (event, { type, val }) => {
     if (type === 'flag') {

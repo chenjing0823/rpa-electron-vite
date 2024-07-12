@@ -4,13 +4,27 @@ import HotAreaCheck from './components/hot-area-check.vue'
 import { ref, computed } from 'vue'
 
 const checkhotarea = ref(false)
-const path = ref('')
+const startFlag = ref(false)
+// const path = ref('')
 const a_width = ref(0)
 const b_width = ref(0)
 const t_height = ref(0)
 // const clip = ref('')
-const showText = computed(() => {
+const textSartchat = computed(() => {
+  return startFlag.value ? '停止' : '开始'
+})
+
+const textHotarea = computed(() => {
   return checkhotarea.value ? '关闭热区检查' : '开启热区检查'
+})
+
+window.electronAPI.onUpdateStart((value) => {
+  startFlag.value = value
+})
+
+window.electronAPI.onPullGroup((value) => {
+  // path.value = value
+  // console.log(value)
 })
 
 window.electronAPI.onUpdateCheckhotarea((value) => {
@@ -19,12 +33,11 @@ window.electronAPI.onUpdateCheckhotarea((value) => {
   b_width.value = value.b
   t_height.value = value.t
 })
-window.electronAPI.onUpdatePath((value) => {
-  path.value = value
-})
 
-const ipcHandleSend = () => window.api.apiStart()
-const ipcHandleStop = () => window.api.apiStop()
+const ipcHandleSend = (val) => window.api.apiStart(val)
+
+const ipcHandlePullGroup = () => window.api.apiPullGroup()
+
 const ipcHandleCheckhotarea = (val) => window.api.apiCheckhotarea({ type: 'flag', val: val })
 </script>
 
@@ -33,14 +46,14 @@ const ipcHandleCheckhotarea = (val) => window.api.apiCheckhotarea({ type: 'flag'
   <div class="creator">销帮帮 RPA</div>
   <div class="actions">
     <div class="action">
-      <a target="_blank" rel="noreferrer" @click="ipcHandleSend">开始</a>
+      <a target="_blank" rel="noreferrer" @click="ipcHandleSend(startFlag)">{{ textSartchat }}</a>
     </div>
     <div class="action">
-      <a target="_blank" rel="noreferrer" @click="ipcHandleStop">停止</a>
+      <a target="_blank" rel="noreferrer" @click="ipcHandlePullGroup">拉取群消息</a>
     </div>
     <div class="action">
       <a target="_blank" rel="noreferrer" @click="ipcHandleCheckhotarea(checkhotarea)">{{
-        showText
+        textHotarea
       }}</a>
     </div>
   </div>

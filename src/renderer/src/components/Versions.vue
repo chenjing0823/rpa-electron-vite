@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 
 const status = ref(false)
-window.electronAPI.onUpdateCounter((value) => {
+window.electronAPI.onUpdateStart((value) => {
   status.value = value
 })
 

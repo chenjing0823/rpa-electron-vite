@@ -3,8 +3,8 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
 const api = {
-  apiStart: () => ipcRenderer.send('api-start'),
-  apiStop: () => ipcRenderer.send('api-stop'),
+  apiStart: (val) => ipcRenderer.send('api-start', val),
+  apiPullGroup: (val) => ipcRenderer.send('api-pull-group', val),
   apiCheckhotarea: (val) => ipcRenderer.send('api-checkhotarea', val),
   apiOther: (val) => ipcRenderer.send('api-other', val)
 }
@@ -18,8 +18,10 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('api', api)
     contextBridge.exposeInMainWorld('electronAPI', {
       getOther: (callback) => ipcRenderer.on('get-other', (_event, value) => callback(value)),
-      onUpdateCounter: (callback) =>
-        ipcRenderer.on('update-counter', (_event, value) => callback(value)),
+      onUpdateStart: (callback) =>
+        ipcRenderer.on('update-start', (_event, value) => callback(value)),
+      onPullGroup: (callback) =>
+        ipcRenderer.on('update-pull-group', (_event, value) => callback(value)),
       onUpdatePath: (callback) => ipcRenderer.on('update-path', (_event, value) => callback(value)),
       onUpdateCheckhotarea: (callback) =>
         ipcRenderer.on('update-checkhotarea', (_event, value) => callback(value))
