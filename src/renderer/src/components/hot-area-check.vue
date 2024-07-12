@@ -27,7 +27,6 @@ const handleInputB = (val) => window.api.apiCheckhotarea({ type: 'b', val: val }
 
 const handleChangeT = (val) => window.api.apiCheckhotarea({ type: 't', val: val })
 const handleInputT = (val) => window.api.apiCheckhotarea({ type: 't', val: val })
-
 </script>
 
 <template>

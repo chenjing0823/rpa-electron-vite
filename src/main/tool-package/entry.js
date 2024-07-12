@@ -15,7 +15,7 @@ const {
 
 import doRedClick from './red-click.js'
 import iconv from 'iconv-lite'
-import { getRunningStatus, get_app_config } from './globals.js'
+import { getRunningStatus, get_app_config } from '../globals.js'
 
 screen.config.resourceDirectory = __dirname
 screen.config.highlightOpacity = 0.3

@@ -4,9 +4,15 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 import { handleStart } from './tool-package/entry.js'
+import { pullGroupMessage } from './group-package/entry.js'
 import checkhotarea from './tool-package/check-hot-area.js'
 
-import { setRunningStatus, setCheckhotareaStatus, get_app_config, set_app_config } from './tool-package/globals.js'
+import {
+  setRunningStatus,
+  setCheckhotareaStatus,
+  get_app_config,
+  set_app_config
+} from './globals.js'
 
 let mainWindow
 function createWindow() {
@@ -68,8 +74,9 @@ app.whenReady().then(() => {
     }
   })
   ipcMain.on('api-pull-group', () => {
-    // setRunningStatus(false)
-    mainWindow.webContents.send('update-pull-group', false)
+    setRunningStatus(true)
+    pullGroupMessage()
+    mainWindow.webContents.send('update-pull-group', true)
   })
   ipcMain.on('api-checkhotarea', (event, { type, val }) => {
     if (type === 'flag') {

@@ -1,6 +1,6 @@
 const { screen, pixelWithColor } = require('@nut-tree-fork/nut-js')
 
-import { get_app_config } from './globals.js'
+import { get_app_config } from '../globals.js'
 
 const findContinuousRegions = (points) => {
   let visited = {}

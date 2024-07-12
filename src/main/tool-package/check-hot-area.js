@@ -1,5 +1,5 @@
 const { screen, Region } = require('@nut-tree-fork/nut-js')
-import { getCheckhotareaStatus, get_app_config } from './globals.js'
+import { getCheckhotareaStatus, get_app_config } from '../globals.js'
 screen.config.highlightDurationMs = 1000
 const checkHotArea = async () => {
   if (getCheckhotareaStatus()) {

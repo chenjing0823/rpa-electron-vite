@@ -9,7 +9,7 @@ let isCheckhotarea = false
 // let m_color = new RGBA(255, 0, 0, 255)
 
 let type = 'win-wx'
-let a_width = 60
+let a_width = 198
 let b_width = 268
 let t_height = 62
 let m_color = new RGBA(240, 74, 62, 255)
