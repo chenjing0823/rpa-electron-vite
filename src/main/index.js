@@ -4,7 +4,6 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 import { handleStart } from './tool-package/entry.js'
-import { pullGroupMessage } from './group-package/entry.js'
 import checkhotarea from './tool-package/check-hot-area.js'
 
 import {
@@ -72,11 +71,6 @@ app.whenReady().then(() => {
       handleStart({ mainWindow })
     }
   })
-  ipcMain.on('api-pull-group', () => {
-    setRunningStatus(true)
-    pullGroupMessage()
-    mainWindow.webContents.send('update-pull-group', true)
-  })
   ipcMain.on('api-checkhotarea', (event, { type, val }) => {
     if (type === 'flag') {
       setCheckhotareaStatus(!val)
@@ -92,6 +86,9 @@ app.whenReady().then(() => {
     } else if (type === 't') {
       set_app_config({ key: 't', value: val })
     }
+  })
+  ipcMain.on('api-triggel-axios', (event, val) => {
+    console.log('val', val)
   })
   ipcMain.on('api-other', (event, val) => {
     console.log('val', val)

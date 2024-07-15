@@ -15,14 +15,16 @@ const textSartchat = computed(() => {
 })
 
 const textHotarea = computed(() => {
-  return checkhotarea.value ? '关闭热区检查' : '开启热区检查'
+  return checkhotarea.value ? '关闭热区检查' : '列表热区检查'
 })
 
 window.electronAPI.onUpdateStart((value) => {
   startFlag.value = value
 })
 
-window.electronAPI.onPullGroup(() => {
+window.electronAPI.onTriggelAxios(async () => {})
+
+window.electronAPI.onTriggelAxios(() => {
   // path.value = value
   // console.log(value)
 })
@@ -48,9 +50,6 @@ const ipcHandleCheckhotarea = (val) => window.api.apiCheckhotarea({ type: 'flag'
     <div class="action">
       <a target="_blank" rel="noreferrer" @click="ipcHandleSend(startFlag)">{{ textSartchat }}</a>
     </div>
-    <!-- <div class="action">
-      <a target="_blank" rel="noreferrer" @click="ipcHandlePullGroup">拉取群消息</a>
-    </div> -->
     <div class="action">
       <a target="_blank" rel="noreferrer" @click="ipcHandleCheckhotarea(checkhotarea)">{{
         textHotarea

@@ -1,4 +1,6 @@
 const { RGBA } = require('@nut-tree-fork/nut-js')
+const { exec } = require('child_process')
+import iconv from 'iconv-lite'
 
 let isRunning = false
 let isCheckhotarea = false
@@ -57,6 +59,40 @@ export const getCheckhotareaStatus = () => {
 
 export const setCheckhotareaStatus = (val) => {
   isCheckhotarea = val
+}
+
+export const getClipboardContent = () => {
+  return new Promise((resolve, reject) => {
+    const readClipboardCommand =
+      process.platform === 'win32' ? 'powershell.exe Get-Clipboard' : 'pbpaste'
+
+    exec(readClipboardCommand, (err, stdout, stderr) => {
+      if (err) {
+        reject(err)
+        return
+      }
+      if (stderr) {
+        reject(new Error(stderr))
+        return
+      }
+      resolve(stdout.trim())
+    })
+  })
+}
+
+export const writeToClipboard = (text) => {
+  return new Promise((resolve, reject) => {
+    const encodedText = iconv.encode(text, 'gbk')
+    const childProcess = exec('clip')
+
+    childProcess.stdin.end(encodedText, async (err) => {
+      if (err) {
+        reject(err)
+        return
+      }
+      resolve() // 执行完毕，没有错误
+    })
+  })
 }
 
 export const restartTime = 5000 // 重启时间

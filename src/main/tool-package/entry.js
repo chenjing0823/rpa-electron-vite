@@ -9,8 +9,7 @@ const {
   Region,
   sleep,
   right,
-  up,
-  clipboard
+  up
 } = require('@nut-tree-fork/nut-js')
 const axios = require('axios')
 import doRedClick from './red-click.js'
@@ -20,7 +19,9 @@ import {
   get_app_config,
   restartTime,
   intervalFlagTime,
-  intoMessageWaitTime
+  intoMessageWaitTime,
+  getClipboardContent,
+  writeToClipboard
 } from '../globals.js'
 import { config, API_PREFIX } from '../config/index.js'
 
@@ -47,11 +48,11 @@ const moveToRoot = async () => {
 const moveToMessage = async () => {
   await sleep(intoMessageWaitTime)
   const { a, b, t } = get_app_config()
-  const x = a + b + 12
+  const x = a + b + 100
   const y = t + 5
   const height = await screen.height()
   await mouse.move(straightTo(new Point(x, y)))
-  await mouse.drag(straightTo(new Point(x, height)))
+  await mouse.drag(straightTo(new Point(x, height - t - 50)))
   await keyboard.pressKey(Key.LeftControl, Key.C)
   await keyboard.releaseKey(Key.LeftControl, Key.C)
   const chatHistory = await getClipboardData()
@@ -74,7 +75,7 @@ async function handleInput() {
 
   await keyboard.pressKey(Key.Enter)
   await keyboard.releaseKey(Key.Enter)
-  await clipboard.setContent('')
+  // await clipboard.setContent('')
   handleStart()
 }
 
@@ -88,6 +89,7 @@ const handerClickRedPoint = async (allRedPoint) => {
       const point = allRedPoint[0] // 拿第一个点，发完消息都重新拿点
       const p = new Point(point.x, point.y)
       await mouse.move(straightTo(p))
+      await sleep(1000)
       await mouse.leftClick()
       await moveToMessage()
     } else {
@@ -102,7 +104,7 @@ const handerClickRedPoint = async (allRedPoint) => {
  * @returns {Promise<void>} 在剪贴板内容更新完成后解析的 Promise
  */
 async function getClipboardData() {
-  const value = await clipboard.getContent()
+  const value = await getClipboardContent()
   // 使用换行符分割文本成数组
   const arr = value.trim().split('\n')
   let result = []
@@ -151,7 +153,8 @@ async function chatDataFormat(arr) {
       sendTime: timestamp
     })
   })
-  await clipboard.setContent(JSON.stringify(result))
+  await writeToClipboard(JSON.stringify(result))
+  // await clipboard.setContent(JSON.stringify(result))
   return result
 }
 
@@ -163,7 +166,8 @@ async function getMsgReply(dataFormat) {
       msgList: dataFormat
     })
     .then(async (res) => {
-      await clipboard.setContent(res.data.result.answer)
+      // await clipboard.setContent(res.data.result.answer)
+      await writeToClipboard(res.data.result.answer, handleInput)
       await handleInput()
     })
     .catch((error) => {
@@ -220,7 +224,6 @@ async function handleScrollOrClick() {
 const handleStart = async () => {
   if (getRunningStatus()) {
     await moveToRoot()
-    await sleep(1000)
     await handleScrollOrClick()
   } else {
     console.log('停止运行')

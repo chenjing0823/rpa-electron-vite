@@ -4,7 +4,7 @@ import { electronAPI } from '@electron-toolkit/preload'
 // Custom APIs for renderer
 const api = {
   apiStart: (val) => ipcRenderer.send('api-start', val),
-  apiPullGroup: (val) => ipcRenderer.send('api-pull-group', val),
+  apiTriggelAxios: (val) => ipcRenderer.send('api-triggel-axios', val),
   apiCheckhotarea: (val) => ipcRenderer.send('api-checkhotarea', val),
   apiOther: (val) => ipcRenderer.send('api-other', val)
 }
@@ -20,8 +20,8 @@ if (process.contextIsolated) {
       getOther: (callback) => ipcRenderer.on('get-other', (_event, value) => callback(value)),
       onUpdateStart: (callback) =>
         ipcRenderer.on('update-start', (_event, value) => callback(value)),
-      onPullGroup: (callback) =>
-        ipcRenderer.on('update-pull-group', (_event, value) => callback(value)),
+      onTriggelAxios: (callback) =>
+        ipcRenderer.on('triggel-axios', (_event, value) => callback(value)),
       onUpdatePath: (callback) => ipcRenderer.on('update-path', (_event, value) => callback(value)),
       onUpdateCheckhotarea: (callback) =>
         ipcRenderer.on('update-checkhotarea', (_event, value) => callback(value))
