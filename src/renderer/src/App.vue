@@ -1,6 +1,7 @@
 <script setup>
-import versions from './components/Versions.vue'
+import AppVersion from './components/app-version.vue'
 import HotAreaCheck from './components/hot-area-check.vue'
+import { debounce } from './utils/index.js'
 import { ref, computed } from 'vue'
 
 const checkhotarea = ref(false)
@@ -24,11 +25,6 @@ window.electronAPI.onUpdateStart((value) => {
 
 window.electronAPI.onTriggelAxios(async () => {})
 
-window.electronAPI.onTriggelAxios(() => {
-  // path.value = value
-  // console.log(value)
-})
-
 window.electronAPI.onUpdateCheckhotarea((value) => {
   checkhotarea.value = value.flag
   a_width.value = value.a
@@ -36,11 +32,19 @@ window.electronAPI.onUpdateCheckhotarea((value) => {
   t_height.value = value.t
 })
 
-const ipcHandleSend = (val) => window.api.apiStart(val)
+const ipcHandleSend = debounce((val) => {
+  if (checkhotarea.value) {
+    ipcHandleCheckhotarea(checkhotarea.value)
+  }
+  window.api.apiStart(val)
+}, 1000)
 
 // const ipcHandlePullGroup = () => window.api.apiPullGroup()
 
-const ipcHandleCheckhotarea = (val) => window.api.apiCheckhotarea({ type: 'flag', val: val })
+const ipcHandleCheckhotarea = debounce(
+  (val) => window.api.apiCheckhotarea({ type: 'flag', val: val }),
+  1000
+)
 </script>
 
 <template>
@@ -64,5 +68,5 @@ const ipcHandleCheckhotarea = (val) => window.api.apiCheckhotarea({ type: 'flag'
       :t-height="t_height"
     ></HotAreaCheck>
   </div>
-  <versions />
+  <AppVersion />
 </template>
