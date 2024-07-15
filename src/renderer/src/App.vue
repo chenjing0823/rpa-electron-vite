@@ -22,7 +22,7 @@ window.electronAPI.onUpdateStart((value) => {
   startFlag.value = value
 })
 
-window.electronAPI.onPullGroup((value) => {
+window.electronAPI.onPullGroup(() => {
   // path.value = value
   // console.log(value)
 })
@@ -36,7 +36,7 @@ window.electronAPI.onUpdateCheckhotarea((value) => {
 
 const ipcHandleSend = (val) => window.api.apiStart(val)
 
-const ipcHandlePullGroup = () => window.api.apiPullGroup()
+// const ipcHandlePullGroup = () => window.api.apiPullGroup()
 
 const ipcHandleCheckhotarea = (val) => window.api.apiCheckhotarea({ type: 'flag', val: val })
 </script>
@@ -48,9 +48,9 @@ const ipcHandleCheckhotarea = (val) => window.api.apiCheckhotarea({ type: 'flag'
     <div class="action">
       <a target="_blank" rel="noreferrer" @click="ipcHandleSend(startFlag)">{{ textSartchat }}</a>
     </div>
-    <div class="action">
+    <!-- <div class="action">
       <a target="_blank" rel="noreferrer" @click="ipcHandlePullGroup">拉取群消息</a>
-    </div>
+    </div> -->
     <div class="action">
       <a target="_blank" rel="noreferrer" @click="ipcHandleCheckhotarea(checkhotarea)">{{
         textHotarea

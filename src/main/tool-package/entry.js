@@ -12,10 +12,17 @@ const {
   up,
   clipboard
 } = require('@nut-tree-fork/nut-js')
-
+const axios = require('axios')
 import doRedClick from './red-click.js'
 import iconv from 'iconv-lite'
-import { getRunningStatus, get_app_config } from '../globals.js'
+import {
+  getRunningStatus,
+  get_app_config,
+  restartTime,
+  intervalFlagTime,
+  intoMessageWaitTime
+} from '../globals.js'
+import { config, API_PREFIX } from '../config/index.js'
 
 screen.config.resourceDirectory = __dirname
 screen.config.highlightOpacity = 0.3
@@ -23,6 +30,10 @@ mouse.config.mouseSpeed = 2000
 
 let isScrollDown = true
 let scrollCount = 0
+
+let intervalFlag = true
+// 间隔标识。识别到红点后，若该标识为true，将值设置成false,
+// 等待x秒再次识别，若红点还在，进入聊天。这样等待为了避免手机回复了消息，电脑重复回复
 
 /**
  * @description: 鼠标起点位置
@@ -34,7 +45,7 @@ const moveToRoot = async () => {
 }
 
 const moveToMessage = async () => {
-  await sleep(5000)
+  await sleep(intoMessageWaitTime)
   const { a, b, t } = get_app_config()
   const x = a + b + 12
   const y = t + 5
@@ -43,9 +54,10 @@ const moveToMessage = async () => {
   await mouse.drag(straightTo(new Point(x, height)))
   await keyboard.pressKey(Key.LeftControl, Key.C)
   await keyboard.releaseKey(Key.LeftControl, Key.C)
-  await clipboardDataFormat()
-
-  await handleInput()
+  const chatHistory = await getClipboardData()
+  const dataFormat = await chatDataFormat(chatHistory)
+  await getMsgReply(dataFormat)
+  // await handleInput()
 }
 
 async function handleInput() {
@@ -62,6 +74,7 @@ async function handleInput() {
 
   await keyboard.pressKey(Key.Enter)
   await keyboard.releaseKey(Key.Enter)
+  await clipboard.setContent('')
   handleStart()
 }
 
@@ -88,7 +101,7 @@ const handerClickRedPoint = async (allRedPoint) => {
  * 格式化剪贴板数据
  * @returns {Promise<void>} 在剪贴板内容更新完成后解析的 Promise
  */
-async function clipboardDataFormat() {
+async function getClipboardData() {
   const value = await clipboard.getContent()
   // 使用换行符分割文本成数组
   const arr = value.trim().split('\n')
@@ -109,8 +122,54 @@ async function clipboardDataFormat() {
   if (temp.length > 0) {
     result.push(temp)
   }
-  const send = result.map((i) => i.join('\n')).join('\n')
-  await clipboard.setContent(send)
+  return result
+}
+
+/**
+ * 格式化聊天数据
+ * 这个函数接受一个数组作为参数，并返回一个格式化后的数组
+ * 每个元素包含 msgType、content、userName 和 sendTime 属性
+ * @param {Array} arr - 要格式化的聊天数据数组
+ * @returns {Array} - 格式化后的聊天数据数组
+ */
+async function chatDataFormat(arr) {
+  const result = []
+  arr.forEach((item) => {
+    const nameAndTime = item.shift()
+    // 分割字符串获取名字和时间部分
+    const parts = nameAndTime.split(' ')
+    const name = parts[0] // 名字部分
+    const time = parts.slice(1).join(' ') // 时间部分
+    // 将时间转换为当前年份的时间戳
+    const currentYear = new Date().getFullYear() // 获取当前年份
+    const datetimeString = `${currentYear} ${time}` // 拼接当前年份和时间
+    const timestamp = new Date(datetimeString).getTime() // 转换为时间戳
+    result.push({
+      msgType: 'text',
+      content: item,
+      userName: name,
+      sendTime: timestamp
+    })
+  })
+  await clipboard.setContent(JSON.stringify(result))
+  return result
+}
+
+async function getMsgReply(dataFormat) {
+  const env = process.env.NODE_ENV || 'development'
+  const apiUrl = config[env].apiUrl
+  axios
+    .post(`${apiUrl}${API_PREFIX}/im/msg/reply`, {
+      msgList: dataFormat
+    })
+    .then(async (res) => {
+      await clipboard.setContent(res.data.result.answer)
+      await handleInput()
+    })
+    .catch((error) => {
+      console.log(error)
+      handleStart()
+    })
 }
 
 /**
@@ -134,9 +193,8 @@ async function handleScrollOrClick() {
     if (scrollCount >= 12) {
       isScrollDown = false
     }
-    setTimeout(() => {
-      handleStart()
-    }, 5000)
+    await sleep(restartTime)
+    handleStart()
   } else if (scroll && !isScrollDown) {
     for (let index = 0; index < 12; index++) {
       await mouse.scrollUp(5)
@@ -144,7 +202,12 @@ async function handleScrollOrClick() {
     scrollCount = 0
     isScrollDown = true
     handleStart()
+  } else if (intervalFlag) {
+    await sleep(intervalFlagTime)
+    intervalFlag = false
+    handleStart()
   } else {
+    intervalFlag = true
     handerClickRedPoint(allRedPoint)
   }
 }

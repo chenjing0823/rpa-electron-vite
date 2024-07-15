@@ -9,7 +9,7 @@ let isCheckhotarea = false
 // let m_color = new RGBA(255, 0, 0, 255)
 
 let type = 'win-wx'
-let a_width = 198
+let a_width = 60
 let b_width = 268
 let t_height = 62
 let m_color = new RGBA(240, 74, 62, 255)
@@ -58,3 +58,7 @@ export const getCheckhotareaStatus = () => {
 export const setCheckhotareaStatus = (val) => {
   isCheckhotarea = val
 }
+
+export const restartTime = 5000 // 重启时间
+export const intervalFlagTime = 5000 // 识别红点再次识别需等待时间
+export const intoMessageWaitTime = 5000 // 进入消息页等待时间

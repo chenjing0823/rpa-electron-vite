@@ -65,7 +65,6 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
   ipcMain.on('api-start', (event, val) => {
-    console.log('api-start', val)
     setRunningStatus(!val)
     mainWindow.webContents.send('update-start', !val)
     if (!val) {
