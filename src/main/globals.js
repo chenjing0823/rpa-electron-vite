@@ -1,6 +1,6 @@
 const { RGBA } = require('@nut-tree-fork/nut-js')
-const { exec } = require('child_process')
-import iconv from 'iconv-lite'
+const fs = require('fs')
+const { clipboard } = require('electron')
 
 let isRunning = false
 let isCheckhotarea = false
@@ -26,11 +26,40 @@ export const getType = () => {
   return type
 }
 
+function throttle(func, delay) {
+  let lastCalledTime = 0
+
+  return function (...args) {
+    const now = Date.now()
+
+    if (now - lastCalledTime >= delay) {
+      func(...args)
+      lastCalledTime = now
+    }
+  }
+}
+
+function cacheData(data) {
+  fs.writeFileSync('cache.txt', JSON.stringify(data))
+}
+
+function readCachedData() {
+  try {
+    const data = fs.readFileSync('cache.txt', 'utf-8')
+    return JSON.parse(data)
+  } catch (err) {
+    // 处理文件不存在或读取错误的情况
+    return null
+  }
+}
+
 export const get_app_config = () => {
+  console.log('readCachedData', readCachedData())
+  const { a, b, t } = readCachedData() || {}
   return {
-    a: a_width,
-    b: b_width,
-    t: t_height,
+    a: a || a_width,
+    b: b || b_width,
+    t: t || t_height,
     m: m_color
   }
 }
@@ -43,6 +72,15 @@ export const set_app_config = ({ key, value }) => {
   } else if (key === 't') {
     t_height = value
   }
+  throttle(
+    cacheData({
+      a: a_width,
+      b: b_width,
+      t: t_height,
+      m: m_color
+    }),
+    500
+  )
 }
 
 export const getRunningStatus = () => {
@@ -62,39 +100,18 @@ export const setCheckhotareaStatus = (val) => {
 }
 
 export const getClipboardContent = () => {
-  return new Promise((resolve, reject) => {
-    const readClipboardCommand =
-      process.platform === 'win32' ? 'powershell.exe Get-Clipboard' : 'pbpaste'
-
-    exec(readClipboardCommand, (err, stdout, stderr) => {
-      if (err) {
-        reject(err)
-        return
-      }
-      if (stderr) {
-        reject(new Error(stderr))
-        return
-      }
-      resolve(stdout.trim())
-    })
+  return new Promise((resolve) => {
+    resolve(clipboard.readText())
   })
 }
 
 export const writeToClipboard = (text) => {
-  return new Promise((resolve, reject) => {
-    const encodedText = iconv.encode(text, 'gbk')
-    const childProcess = exec('clip')
-
-    childProcess.stdin.end(encodedText, async (err) => {
-      if (err) {
-        reject(err)
-        return
-      }
-      resolve() // 执行完毕，没有错误
-    })
+  return new Promise((resolve) => {
+    clipboard.writeText(text)
+    resolve()
   })
 }
 
 export const restartTime = 5000 // 重启时间
 export const intervalFlagTime = 5000 // 识别红点再次识别需等待时间
-export const intoMessageWaitTime = 5000 // 进入消息页等待时间
+export const intoMessageWaitTime = 1000 // 进入消息页等待时间

@@ -13,7 +13,6 @@ const {
 } = require('@nut-tree-fork/nut-js')
 const axios = require('axios')
 import doRedClick from './red-click.js'
-import iconv from 'iconv-lite'
 import {
   getRunningStatus,
   get_app_config,
@@ -48,24 +47,21 @@ const moveToRoot = async () => {
 const moveToMessage = async () => {
   await sleep(intoMessageWaitTime)
   const { a, b, t } = get_app_config()
-  const x = a + b + 100
+  const x = a + b + 12
+  const x2 = a + b + 200
   const y = t + 5
   const height = await screen.height()
+  await mouse.move(straightTo(new Point(x2, y)))
   await mouse.move(straightTo(new Point(x, y)))
-  await mouse.drag(straightTo(new Point(x, height - t - 50)))
+  await mouse.drag(straightTo(new Point(x2, height - t - 50)))
   await keyboard.pressKey(Key.LeftControl, Key.C)
   await keyboard.releaseKey(Key.LeftControl, Key.C)
   const chatHistory = await getClipboardData()
   const dataFormat = await chatDataFormat(chatHistory)
   await getMsgReply(dataFormat)
-  // await handleInput()
 }
 
 async function handleInput() {
-  const test = iconv.encode('你好', 'gbk')
-  console.log(test)
-  const test2 = iconv.decode(test, 'gbk')
-  console.log(test2)
   // 激活输入框 输入内容并发送
   await mouse.move(right(100))
   await mouse.move(up(100))
@@ -154,7 +150,6 @@ async function chatDataFormat(arr) {
     })
   })
   await writeToClipboard(JSON.stringify(result))
-  // await clipboard.setContent(JSON.stringify(result))
   return result
 }
 
@@ -166,8 +161,7 @@ async function getMsgReply(dataFormat) {
       msgList: dataFormat
     })
     .then(async (res) => {
-      // await clipboard.setContent(res.data.result.answer)
-      await writeToClipboard(res.data.result.answer, handleInput)
+      await writeToClipboard(res.data.result.answer)
       await handleInput()
     })
     .catch((error) => {
@@ -222,6 +216,7 @@ async function handleScrollOrClick() {
  * @returns
  */
 const handleStart = async () => {
+  // await moveToMessage()
   if (getRunningStatus()) {
     await moveToRoot()
     await handleScrollOrClick()

@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, globalShortcut } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -54,6 +54,18 @@ app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
+  // 注册 Ctrl+Q 快捷键
+  const ret = globalShortcut.register('CommandOrControl+Q', () => {
+    // 在这里执行你想要的操作，比如关闭应用程序等
+    console.log('Ctrl+Q is pressed')
+    setRunningStatus(false)
+    mainWindow.webContents.send('update-start', false)
+  })
+
+  if (!ret) {
+    console.log('注册快捷键失败')
+  }
+
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
@@ -101,6 +113,14 @@ app.whenReady().then(() => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  })
+  // 当应用程序退出时，取消注册快捷键
+  app.on('will-quit', () => {
+    // 解除注册快捷键
+    globalShortcut.unregister('CommandOrControl+Q')
+
+    // 如果是 macOS，需要手动退出，因为全局快捷键不会自动注销
+    globalShortcut.unregisterAll()
   })
 })
 

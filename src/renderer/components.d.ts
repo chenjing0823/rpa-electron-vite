@@ -7,7 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AppVersion: typeof import('./src/components/app-version.vue')['default']
     HotAreaCheck: typeof import('./src/components/hot-area-check.vue')['default']
-    Versions: typeof import('./src/components/Versions.vue')['default']
   }
 }
