@@ -4,6 +4,7 @@ const { clipboard } = require('electron')
 
 let isRunning = false
 let isCheckhotarea = false
+let env = 'development'
 // let type = 'win-ding'
 // let a_width = 140
 // let b_width = 280
@@ -15,12 +16,21 @@ let a_width = 60
 let b_width = 268
 let t_height = 62
 let m_color = new RGBA(240, 74, 62, 255)
+// let m_color = new RGBA(250, 81,81, 255)
 
 // let type = 'mac-wx'
 // let a_width = 60
 // let b_width = 260
 // let t_height = 60
 // let m_color = new RGBA(222, 87, 71, 255)
+
+export const getEnv = () => {
+  return env
+}
+
+export const setEnv = (val) => {
+  env = val
+}
 
 export const getType = () => {
   return type
@@ -113,5 +123,5 @@ export const writeToClipboard = (text) => {
 }
 
 export const restartTime = 5000 // 重启时间
-export const intervalFlagTime = 5000 // 识别红点再次识别需等待时间
+export const intervalFlagTime = 15000 // 识别红点再次识别需等待时间
 export const intoMessageWaitTime = 1000 // 进入消息页等待时间

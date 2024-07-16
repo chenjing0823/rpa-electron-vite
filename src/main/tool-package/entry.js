@@ -7,15 +7,14 @@ const {
   Key,
   centerOf,
   Region,
-  sleep,
-  right,
-  up
+  sleep
 } = require('@nut-tree-fork/nut-js')
 const axios = require('axios')
 import doRedClick from './red-click.js'
 import {
   getRunningStatus,
   get_app_config,
+  getEnv,
   restartTime,
   intervalFlagTime,
   intoMessageWaitTime,
@@ -63,8 +62,6 @@ const moveToMessage = async () => {
 
 async function handleInput() {
   // 激活输入框 输入内容并发送
-  await mouse.move(right(100))
-  await mouse.move(up(100))
   await mouse.leftClick()
   await keyboard.pressKey(Key.LeftControl, Key.V)
   await keyboard.releaseKey(Key.LeftControl, Key.V)
@@ -154,7 +151,7 @@ async function chatDataFormat(arr) {
 }
 
 async function getMsgReply(dataFormat) {
-  const env = process.env.NODE_ENV || 'development'
+  const env = getEnv()
   const apiUrl = config[env].apiUrl
   axios
     .post(`${apiUrl}${API_PREFIX}/im/msg/reply`, {

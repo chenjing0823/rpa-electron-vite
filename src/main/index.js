@@ -10,7 +10,8 @@ import {
   setRunningStatus,
   setCheckhotareaStatus,
   get_app_config,
-  set_app_config
+  set_app_config,
+  setEnv
 } from './globals.js'
 
 let mainWindow
@@ -75,7 +76,9 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
-  ipcMain.on('api-start', (event, val) => {
+  ipcMain.on('api-start', (event, value) => {
+    const { val, env } = value
+    setEnv(env)
     setRunningStatus(!val)
     mainWindow.webContents.send('update-start', !val)
     if (!val) {
