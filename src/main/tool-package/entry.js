@@ -15,6 +15,7 @@ import {
   getRunningStatus,
   get_app_config,
   getEnv,
+  getLogin,
   restartTime,
   intervalFlagTime,
   intoMessageWaitTime,
@@ -120,6 +121,28 @@ async function getClipboardData() {
   return result
 }
 
+function splitString(str) {
+  const _str = str.trim()
+  const regex = /(\d{1,2}-\d{1,2} \d{2}:\d{2}:\d{2})$/
+  const match = _str.match(regex)
+  if (match) {
+    const timeStr = match[1]
+    const name = _str.slice(0, _str.length - timeStr.length)
+    return { name, time: timeStr }
+  }
+  return { name: '', time: '' }
+}
+
+function getRootTime() {
+  // 获取当前年份
+  const currentYear = new Date().getFullYear()
+  // 构造当年的1月1日的 Date 对象
+  const januaryFirst = new Date(currentYear, 0, 1, 0, 0, 0)
+  // 获取对应的时间戳（单位：毫秒）
+  const timestamp = januaryFirst.getTime()
+  return timestamp
+}
+
 /**
  * 格式化聊天数据
  * 这个函数接受一个数组作为参数，并返回一个格式化后的数组
@@ -132,9 +155,10 @@ async function chatDataFormat(arr) {
   arr.forEach((item) => {
     const nameAndTime = item.shift()
     // 分割字符串获取名字和时间部分
-    const parts = nameAndTime.split(' ')
-    const name = parts[0] // 名字部分
-    const time = parts.slice(1).join(' ') // 时间部分
+    // const parts = nameAndTime.split(' ')
+    // const name = parts[0] // 名字部分
+    // const time = parts.slice(1).join(' ') // 时间部分
+    const { name, time } = splitString(nameAndTime)
     // 将时间转换为当前年份的时间戳
     const currentYear = new Date().getFullYear() // 获取当前年份
     const datetimeString = `${currentYear} ${time}` // 拼接当前年份和时间
@@ -146,16 +170,23 @@ async function chatDataFormat(arr) {
       sendTime: timestamp
     })
   })
+  if (result.length === 1 && !result[0].name && result[0].sendTime === getRootTime()) {
+    const value = await getClipboardContent()
+    result[0].content = [value]
+  }
   await writeToClipboard(JSON.stringify(result))
   return result
 }
 
 async function getMsgReply(dataFormat) {
   const env = getEnv()
+  const token = getLogin()
   const apiUrl = config[env].apiUrl
   axios
     .post(`${apiUrl}${API_PREFIX}/im/msg/reply`, {
-      msgList: dataFormat
+      msgList: dataFormat,
+      corpid: token.corpid,
+      userId: token.userId
     })
     .then(async (res) => {
       await writeToClipboard(res.data.result.answer)

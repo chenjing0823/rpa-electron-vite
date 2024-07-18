@@ -4,11 +4,11 @@ import Rpa from './components/rpa.vue'
 import Login from './components/login.vue'
 import { ref } from 'vue'
 
-const isLogin = ref(true)
+const isLogin = ref(false)
 
 const handleLogin = (value) => {
   isLogin.value = true
-  console.log(value)
+  window.api.apiLogin(JSON.parse(JSON.stringify(value)))
 }
 </script>
 

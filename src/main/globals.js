@@ -5,6 +5,7 @@ const { clipboard } = require('electron')
 let isRunning = false
 let isCheckhotarea = false
 let env = 'development'
+let token = {}
 // let type = 'win-ding'
 // let a_width = 140
 // let b_width = 280
@@ -23,6 +24,15 @@ let m_color = new RGBA(240, 74, 62, 255)
 // let b_width = 260
 // let t_height = 60
 // let m_color = new RGBA(222, 87, 71, 255)
+
+export const getLogin = () => {
+  return token
+}
+
+export const setLogin = (val) => {
+  token = val
+  console.log(token)
+}
 
 export const getEnv = () => {
   return env
@@ -122,6 +132,6 @@ export const writeToClipboard = (text) => {
   })
 }
 
-export const restartTime = 5000 // 重启时间
-export const intervalFlagTime = 15000 // 识别红点再次识别需等待时间
+export const restartTime = 1000 // 重启时间
+export const intervalFlagTime = 1000 // 识别红点再次识别需等待时间
 export const intoMessageWaitTime = 1000 // 进入消息页等待时间

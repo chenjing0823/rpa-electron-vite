@@ -6,22 +6,22 @@ const emits = defineEmits(['handleLogin'])
 
 const ruleFormRef = ref(null)
 const ruleForm = ref({
-  phone: '',
-  pwd: ''
+  corpid: 'xbd$$dingf8e5f52a6b857a3aa39a90f97fcb1e09',
+  userId: '23425620061216021'
 })
 const rules = ref({
-  phone: [
+  corpid: [
     {
       required: true,
       trigger: 'blur',
-      message: '请输入手机号'
+      message: '请输入corpid'
     }
   ],
-  pwd: [
+  userId: [
     {
       required: true,
       trigger: 'blur',
-      message: '请输入密码'
+      message: '请输入userId'
     }
   ]
 })
@@ -52,11 +52,11 @@ const resetForm = (formEl) => {
     label-width="120px"
     class="demo-ruleForm"
   >
-    <el-form-item label="手机号" prop="phone">
-      <el-input v-model="ruleForm.phone" autocomplete="off" />
+    <el-form-item label="corpid" prop="corpid">
+      <el-input v-model="ruleForm.corpid" autocomplete="off" />
     </el-form-item>
-    <el-form-item label="密码" prop="pwd">
-      <el-input v-model="ruleForm.pwd" type="password" autocomplete="off" />
+    <el-form-item label="userId" prop="userId">
+      <el-input v-model="ruleForm.userId" autocomplete="off" />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm(ruleFormRef)">Submit</el-button>

@@ -11,7 +11,8 @@ import {
   setCheckhotareaStatus,
   get_app_config,
   set_app_config,
-  setEnv
+  setEnv,
+  setLogin
 } from './globals.js'
 
 let mainWindow
@@ -76,6 +77,10 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+  ipcMain.on('api-login', (event, value) => {
+    console.log('login', value)
+    setLogin(value)
+  })
   ipcMain.on('api-start', (event, value) => {
     const { val, env } = value
     setEnv(env)
