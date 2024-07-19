@@ -80,6 +80,7 @@ app.whenReady().then(() => {
   ipcMain.on('api-login', (event, value) => {
     console.log('login', value)
     setLogin(value)
+    // mainWindow.setSize(800, 600, true)
   })
   ipcMain.on('api-start', (event, value) => {
     const { val, env } = value

@@ -7,7 +7,9 @@ const {
   Key,
   centerOf,
   Region,
-  sleep
+  sleep,
+  right,
+  down
 } = require('@nut-tree-fork/nut-js')
 const axios = require('axios')
 import doRedClick from './red-click.js'
@@ -30,6 +32,7 @@ mouse.config.mouseSpeed = 2000
 
 let isScrollDown = true
 let scrollCount = 0
+let sessionName = ''
 
 let intervalFlag = true
 // 间隔标识。识别到红点后，若该标识为true，将值设置成false,
@@ -44,7 +47,30 @@ const moveToRoot = async () => {
   await mouse.leftClick()
 }
 
+/**
+ * 获取对话名称
+ */
+async function getSessionName() {
+  const { a, b, t } = get_app_config()
+  const x = a + b + 40
+  const y = t - 25
+  await mouse.move(straightTo(new Point(x, y)))
+  await mouse.rightClick()
+  await keyboard.pressKey(Key.LeftControl, Key.C)
+  await keyboard.releaseKey(Key.LeftControl, Key.C)
+  await sleep(1000)
+  await mouse.move(right(20))
+  await mouse.move(down(15))
+  await mouse.leftClick()
+
+  sessionName = await getClipboardContent()
+}
+
+/**
+ * 鼠标移向聊天窗口
+ */
 const moveToMessage = async () => {
+  await getSessionName()
   await sleep(intoMessageWaitTime)
   const { a, b, t } = get_app_config()
   const x = a + b + 12
@@ -186,7 +212,8 @@ async function getMsgReply(dataFormat) {
     .post(`${apiUrl}${API_PREFIX}/im/msg/reply`, {
       msgList: dataFormat,
       corpid: token.corpid,
-      userId: token.userId
+      userId: token.userId,
+      sessionName: sessionName
     })
     .then(async (res) => {
       await writeToClipboard(res.data.result.answer)
@@ -195,6 +222,9 @@ async function getMsgReply(dataFormat) {
     .catch((error) => {
       console.log(error)
       handleStart()
+    })
+    .finally(() => {
+      sessionName = ''
     })
 }
 

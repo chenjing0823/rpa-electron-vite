@@ -34,7 +34,7 @@ const ipcHandleSend = debounce((val) => {
     ipcHandleCheckhotarea(checkhotarea.value)
   }
   window.api.apiStart({ val: val, env: process.env.NODE_ENV })
-}, 1000)
+}, 500)
 
 const ipcHandleCheckhotarea = debounce(
   (val) => window.api.apiCheckhotarea({ type: 'flag', val: val }),

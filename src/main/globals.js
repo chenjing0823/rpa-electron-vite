@@ -31,7 +31,6 @@ export const getLogin = () => {
 
 export const setLogin = (val) => {
   token = val
-  console.log(token)
 }
 
 export const getEnv = () => {
