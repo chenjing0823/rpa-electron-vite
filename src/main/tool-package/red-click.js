@@ -65,7 +65,7 @@ const doRedClick = async () => {
       // console.log(`第${index + 1}个红点，位置在${posDesc}, 红点大小为：${length}`)
       // console.log(posX > 130 ? '是消息列表' : '不是消息列表')
       // 免打扰的小点 length = 27
-      if (posX > a && posX < a + b && length > 30) {
+      if (posX > a && posX < a + b && length > 60) {
         // 位置大于功能列宽，小于功能列宽+消息列宽，并且长度大于30
         allRedPoint.push(point[0])
       }

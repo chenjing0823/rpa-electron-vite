@@ -131,6 +131,6 @@ export const writeToClipboard = (text) => {
   })
 }
 
-export const restartTime = 1000 // 重启时间
-export const intervalFlagTime = 1000 // 识别红点再次识别需等待时间
-export const intoMessageWaitTime = 1000 // 进入消息页等待时间
+export const restartTime = 3000 // 重启时间
+export const intervalFlagTime = 3000 // 识别红点再次识别需等待时间
+export const intoMessageWaitTime = 5000 // 进入消息页等待时间

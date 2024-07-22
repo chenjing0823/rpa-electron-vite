@@ -72,6 +72,9 @@ async function getSessionName() {
 const moveToMessage = async () => {
   await getSessionName()
   await sleep(intoMessageWaitTime)
+  if (!getRunningStatus()) {
+    return
+  }
   const { a, b, t } = get_app_config()
   const x = a + b + 12
   const x2 = a + b + 200
@@ -87,7 +90,7 @@ const moveToMessage = async () => {
   await getMsgReply(dataFormat)
 }
 
-async function handleInput() {
+async function handleInput(isLast) {
   // 激活输入框 输入内容并发送
   await mouse.leftClick()
   await keyboard.pressKey(Key.LeftControl, Key.V)
@@ -96,7 +99,9 @@ async function handleInput() {
   await keyboard.pressKey(Key.Enter)
   await keyboard.releaseKey(Key.Enter)
   // await clipboard.setContent('')
-  handleStart()
+  if (isLast) {
+    handleStart()
+  }
 }
 
 /**
@@ -204,7 +209,18 @@ async function chatDataFormat(arr) {
   return result
 }
 
+async function replyMsgList(msgList) {
+  for (let i = 0; i < msgList.length; i++) {
+    const isLast = i === msgList.length - 1
+    await writeToClipboard(msgList[i].answer)
+    await handleInput(isLast)
+  }
+}
+
 async function getMsgReply(dataFormat) {
+  if (!getRunningStatus()) {
+    return
+  }
   const env = getEnv()
   const token = getLogin()
   const apiUrl = config[env].apiUrl
@@ -216,8 +232,8 @@ async function getMsgReply(dataFormat) {
       sessionName: sessionName
     })
     .then(async (res) => {
-      await writeToClipboard(res.data.result.answer)
-      await handleInput()
+      console.log(res)
+      await replyMsgList(res.data.result.answers)
     })
     .catch((error) => {
       console.log(error)
