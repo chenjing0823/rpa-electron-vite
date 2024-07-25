@@ -51,6 +51,7 @@ const moveToRoot = async () => {
  * 获取对话名称
  */
 async function getSessionName() {
+  sessionName = ''
   const { a, b, t } = get_app_config()
   const x = a + b + 40
   const y = t - 25
@@ -62,6 +63,7 @@ async function getSessionName() {
   await mouse.move(right(20))
   await mouse.move(down(15))
   await mouse.leftClick()
+  await sleep(1000)
 
   sessionName = await getClipboardContent()
 }
@@ -224,24 +226,40 @@ async function getMsgReply(dataFormat) {
   const env = getEnv()
   const token = getLogin()
   const apiUrl = config[env].apiUrl
-  axios
-    .post(`${apiUrl}${API_PREFIX}/im/msg/reply`, {
-      msgList: dataFormat,
-      corpid: token.corpid,
-      userId: token.userId,
-      sessionName: sessionName
-    })
-    .then(async (res) => {
-      console.log(res)
-      await replyMsgList(res.data.result.answers)
-    })
-    .catch((error) => {
-      console.log(error)
+  const params = {
+    msgList: dataFormat,
+    corpid: token.corpid,
+    userId: token.userId,
+    sessionName: sessionName
+  }
+  await writeToClipboard(JSON.stringify(params))
+  try {
+    const response = await axios.post(`${apiUrl}${API_PREFIX}/im/msg/reply`, params)
+    const { data } = response
+    if (data.code === 1) {
+      const { answers } = data.result
+      await replyMsgList(answers)
+    } else {
+      const errStr = '接口报错：' + JSON.stringify(data)
+      await writeToClipboard(errStr)
       handleStart()
-    })
-    .finally(() => {
-      sessionName = ''
-    })
+    }
+  } catch (error) {
+    // console.error(error)
+    const errStr = '请求报错：' + JSON.stringify(error)
+    await writeToClipboard(JSON.stringify(errStr))
+    handleStart()
+  }
+  // axios
+  //   .post(`${apiUrl}${API_PREFIX}/im/msg/reply`, params)
+  //   .then(async (res) => {
+  //     console.log(res)
+  //     await replyMsgList(res.data.result.answers)
+  //   })
+  //   .catch((error) => {
+  //     console.log(error)
+  //     handleStart()
+  //   })
 }
 
 /**

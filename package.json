@@ -1,7 +1,7 @@
 {
   "name": "xbb-rpa-electron",
   "productName": "销帮帮RPA",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "销帮帮RPA (内部使用)",
   "main": "./out/main/index.js",
   "author": "example.com",
@@ -10,11 +10,12 @@
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts,.vue --fix",
     "start": "electron-vite preview",
-    "dev": "electron-vite dev",
+    "dev": "electron-vite dev --mode=development",
     "build": "electron-vite build",
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win",
+    "build:wintest1": "npm run build && electron-builder --win --mode=test1",
     "build:mac": "npm run build && electron-builder --mac",
     "build:linux": "npm run build && electron-builder --linux"
   },
