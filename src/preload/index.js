@@ -7,6 +7,7 @@ const api = {
   apiLogin: (val) => ipcRenderer.send('api-login', val),
   apiTriggelAxios: (val) => ipcRenderer.send('api-triggel-axios', val),
   apiCheckhotarea: (val) => ipcRenderer.send('api-checkhotarea', val),
+  apiCheckColor: (val) => ipcRenderer.send('api-checkcolor', val),
   apiOther: (val) => ipcRenderer.send('api-other', val)
 }
 

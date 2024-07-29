@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppVersion: typeof import('./src/components/app-version.vue')['default']
+    CheckColor: typeof import('./src/components/check-color.vue')['default']
     HotAreaCheck: typeof import('./src/components/hot-area-check.vue')['default']
     Login: typeof import('./src/components/login.vue')['default']
     Rpa: typeof import('./src/components/rpa.vue')['default']

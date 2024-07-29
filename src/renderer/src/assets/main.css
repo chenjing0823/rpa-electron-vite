@@ -122,7 +122,9 @@ code {
   font-size: 14px;
   display: flex;
   width: 100%;
-  padding-left: 10px;
+  padding: 0 10px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .hot-area-check {

@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 import { handleStart } from './tool-package/entry.js'
+import { checkColor } from './tool-package/check-color.js'
 import checkhotarea from './tool-package/check-hot-area.js'
 
 import {
@@ -91,6 +92,12 @@ app.whenReady().then(() => {
       // startFlag
       handleStart({ mainWindow })
     }
+  })
+  ipcMain.on('api-checkcolor', (event, val) => {
+    setTimeout(async () => {
+      const color = await checkColor()
+      console.log('index color', color)
+    }, 3000)
   })
   ipcMain.on('api-checkhotarea', (event, { type, val }) => {
     if (type === 'flag') {
