@@ -5,8 +5,8 @@ const {
   Point,
   keyboard,
   Key,
-  centerOf,
-  Region,
+  // centerOf,
+  // Region,
   sleep,
   right,
   down
@@ -43,7 +43,8 @@ let intervalFlag = true
  */
 const moveToRoot = async () => {
   const { a, b, t } = get_app_config()
-  await mouse.move(straightTo(centerOf(new Region(a, t, b, 70))))
+  await mouse.move(straightTo(new Point(a + b / 2, t + 50)))
+  // await mouse.move(straightTo(centerOf(new Region(a, t, b, 70))))
   await mouse.leftClick()
 }
 
@@ -80,7 +81,7 @@ const moveToMessage = async () => {
   const { a, b, t } = get_app_config()
   const x = a + b + 12
   const x2 = a + b + 200
-  const y = t + 5
+  const y = t + 50
   const height = await screen.height()
   await mouse.move(straightTo(new Point(x2, y)))
   await mouse.move(straightTo(new Point(x, y)))
