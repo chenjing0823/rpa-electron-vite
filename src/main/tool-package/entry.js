@@ -62,9 +62,11 @@ async function getSessionName() {
   await keyboard.releaseKey(Key.LeftControl, Key.C)
   await sleep(1000)
   await mouse.move(right(20))
+  await sleep(500)
   await mouse.move(down(15))
+  await sleep(500)
   await mouse.leftClick()
-  await sleep(1000)
+  await sleep(500)
 
   sessionName = await getClipboardContent()
 }
