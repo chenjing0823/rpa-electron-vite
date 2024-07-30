@@ -1,7 +1,7 @@
 {
   "name": "xbb-rpa-electron",
   "productName": "销帮帮RPA",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "销帮帮RPA (内部使用)",
   "main": "./out/main/index.js",
   "author": "example.com",
