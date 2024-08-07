@@ -86,7 +86,9 @@ const moveToMessage = async () => {
   const y = t + 50
   const height = await screen.height()
   await mouse.move(straightTo(new Point(x2, y)))
+  await sleep(500)
   await mouse.move(straightTo(new Point(x, y)))
+  await sleep(500)
   await mouse.drag(straightTo(new Point(x2, height - t - 50)))
   await keyboard.pressKey(Key.LeftControl, Key.C)
   await keyboard.releaseKey(Key.LeftControl, Key.C)
