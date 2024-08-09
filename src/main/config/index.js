@@ -1,6 +1,6 @@
 const config = {
   development: {
-    apiUrl: 'http://192.168.21.125:2052'
+    apiUrl: 'http://192.168.21.134:2052'
   },
   production: {
     apiUrl: 'http://saetestwebf.xbongbong.com.cn'

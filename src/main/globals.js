@@ -1,6 +1,7 @@
 const { RGBA } = require('@nut-tree-fork/nut-js')
 const fs = require('fs')
-const { clipboard } = require('electron')
+const axios = require('axios')
+const { clipboard, nativeImage } = require('electron')
 
 let isRunning = false
 let isCheckhotarea = false
@@ -128,6 +129,39 @@ export const writeToClipboard = (text) => {
   return new Promise((resolve) => {
     clipboard.writeText(text)
     resolve()
+  })
+}
+
+export const writeImgToClipboard = (imageUrl) => {
+  return new Promise((resolve) => {
+    axios({
+      method: 'get',
+      url: imageUrl,
+      responseType: 'stream'
+    })
+      .then((response) => {
+        const writer = fs.createWriteStream('image.jpg')
+        response.data.pipe(writer)
+        // 处理完成的事件
+        writer.on('finish', () => {
+          console.log('dowmload img success')
+          // 创建一个NativeImage实例
+          const image = nativeImage.createFromPath('image.jpg')
+          // 将图片写入剪切板
+          clipboard.writeImage(image)
+          resolve(true)
+        })
+
+        // 处理错误的事件
+        writer.on('error', (err) => {
+          console.error('dowmload img false', err)
+          resolve(false)
+        })
+      })
+      .catch((error) => {
+        console.error('get img err:', error)
+        resolve(false)
+      })
   })
 }
 

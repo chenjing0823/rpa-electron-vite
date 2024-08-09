@@ -22,7 +22,8 @@ import {
   intervalFlagTime,
   intoMessageWaitTime,
   getClipboardContent,
-  writeToClipboard
+  writeToClipboard,
+  writeImgToClipboard
 } from '../globals.js'
 import { config, API_PREFIX } from '../config/index.js'
 
@@ -55,7 +56,7 @@ async function getSessionName() {
   sessionName = ''
   const { a, b, t } = get_app_config()
   const x = a + b + 40
-  const y = t - 25
+  const y = 40
   await mouse.move(straightTo(new Point(x, y)))
   await mouse.rightClick()
   await keyboard.pressKey(Key.LeftControl, Key.C)
@@ -95,20 +96,6 @@ const moveToMessage = async () => {
   const chatHistory = await getClipboardData()
   const dataFormat = await chatDataFormat(chatHistory)
   await getMsgReply(dataFormat)
-}
-
-async function handleInput(isLast) {
-  // 激活输入框 输入内容并发送
-  await mouse.leftClick()
-  await keyboard.pressKey(Key.LeftControl, Key.V)
-  await keyboard.releaseKey(Key.LeftControl, Key.V)
-
-  await keyboard.pressKey(Key.Enter)
-  await keyboard.releaseKey(Key.Enter)
-  // await clipboard.setContent('')
-  if (isLast) {
-    handleStart()
-  }
 }
 
 /**
@@ -216,11 +203,47 @@ async function chatDataFormat(arr) {
   return result
 }
 
+async function atPerson (name) {
+  await keyboard.pressKey(Key.LeftShift, Key.Num2)
+  await keyboard.releaseKey(Key.LeftShift, Key.Num2)
+  await sleep(500)
+  await writeToClipboard(name.split('@')[0])
+  await ctrlV()
+  await sleep(500)
+  await keyboard.pressKey(Key.Enter)
+  await keyboard.releaseKey(Key.Enter)
+}
+
+async function ctrlV() {
+  await keyboard.pressKey(Key.LeftControl, Key.V)
+  await keyboard.releaseKey(Key.LeftControl, Key.V)
+}
+
 async function replyMsgList(msgList) {
   for (let i = 0; i < msgList.length; i++) {
     const isLast = i === msgList.length - 1
-    await writeToClipboard(msgList[i].answer)
-    await handleInput(isLast)
+    // 激活输入框 输入内容并发送
+    await mouse.leftClick()
+    for (let j = 0; j < msgList[i].answer.length; j++) {
+      if (j === 0 && msgList[i].userName) {
+        await atPerson(msgList[i].userName)
+      }
+      const answer = msgList[i].answer[j]
+      if (answer.type === 'text') {
+        await writeToClipboard(answer.content)
+        await ctrlV()
+      } else if (answer.type === 'img') {
+        const isSuccess = await writeImgToClipboard(answer.content)
+        if (isSuccess) {
+          await ctrlV()
+        }
+      }
+    }
+    await keyboard.pressKey(Key.Enter)
+    await keyboard.releaseKey(Key.Enter)
+    if (isLast) {
+      handleStart()
+    }
   }
 }
 
@@ -243,6 +266,10 @@ async function getMsgReply(dataFormat) {
     const { data } = response
     if (data.code === 1) {
       const { answers } = data.result
+      if (answers.length === 0) {
+        handleStart()
+        return
+      }
       await replyMsgList(answers)
     } else {
       const errStr = '接口报错：' + JSON.stringify(data)
@@ -255,16 +282,6 @@ async function getMsgReply(dataFormat) {
     await writeToClipboard(JSON.stringify(errStr))
     handleStart()
   }
-  // axios
-  //   .post(`${apiUrl}${API_PREFIX}/im/msg/reply`, params)
-  //   .then(async (res) => {
-  //     console.log(res)
-  //     await replyMsgList(res.data.result.answers)
-  //   })
-  //   .catch((error) => {
-  //     console.log(error)
-  //     handleStart()
-  //   })
 }
 
 /**
@@ -313,7 +330,6 @@ async function handleScrollOrClick() {
  * @returns
  */
 const handleStart = async () => {
-  // await moveToMessage()
   if (getRunningStatus()) {
     await moveToRoot()
     await handleScrollOrClick()
