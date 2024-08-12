@@ -3,6 +3,7 @@ const fs = require('fs')
 const axios = require('axios')
 const { clipboard, nativeImage } = require('electron')
 
+import { config, API_PREFIX } from './config/index.js'
 let isRunning = false
 let isCheckhotarea = false
 let env = 'development'
@@ -107,8 +108,24 @@ export const getRunningStatus = () => {
   return isRunning
 }
 
-export const setRunningStatus = (val) => {
+export const setRunningStatus = async (val, callback) => {
+  const env = getEnv()
+  const token = getLogin()
+  const apiUrl = config[env].apiUrl
+  const params = {
+    corpid: token.corpid,
+    userId: token.userId,
+    status: val ? 1 : 0
+  }
+  try {
+    const response = await axios.post(`${apiUrl}${API_PREFIX}/im/msg/reply/status`, params)
+    const { data } = response
+    console.log('setRunningStatus', data)
+  } catch (error) {
+    console.error('setRunningStatus', error)
+  }
   isRunning = val
+  callback && callback()
 }
 
 export const getCheckhotareaStatus = () => {

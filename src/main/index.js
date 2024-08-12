@@ -61,8 +61,10 @@ app.whenReady().then(() => {
   const ret = globalShortcut.register('CommandOrControl+Q', () => {
     // 在这里执行你想要的操作，比如关闭应用程序等
     console.log('Ctrl+Q is pressed')
-    setRunningStatus(false)
-    mainWindow.webContents.send('update-start', false)
+    const callback = () => {
+      mainWindow.webContents.send('update-start', false)
+    }
+    setRunningStatus(false, callback)
   })
 
   if (!ret) {
@@ -86,12 +88,15 @@ app.whenReady().then(() => {
   ipcMain.on('api-start', (event, value) => {
     const { val, env } = value
     setEnv(env)
-    setRunningStatus(!val)
-    mainWindow.webContents.send('update-start', !val)
-    if (!val) {
-      // startFlag
-      handleStart({ mainWindow })
+    const callback = () => {
+      mainWindow.webContents.send('update-start', !val)
+      if (!val) {
+        // startFlag
+        handleStart({ mainWindow })
+      }
     }
+    setRunningStatus(!val, callback)
+
   })
   ipcMain.on('api-checkcolor', (event, val) => {
     setTimeout(async () => {

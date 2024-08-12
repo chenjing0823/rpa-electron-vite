@@ -203,7 +203,7 @@ async function chatDataFormat(arr) {
   return result
 }
 
-async function atPerson (name) {
+async function atPerson(name) {
   await keyboard.pressKey(Key.LeftShift, Key.Num2)
   await keyboard.releaseKey(Key.LeftShift, Key.Num2)
   await sleep(500)
@@ -334,7 +334,7 @@ const handleStart = async () => {
     await moveToRoot()
     await handleScrollOrClick()
   } else {
-    console.log('停止运行')
+    console.log('stop server')
     return false
   }
 }
