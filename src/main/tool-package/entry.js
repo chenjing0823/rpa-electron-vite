@@ -54,9 +54,9 @@ const moveToRoot = async () => {
  */
 async function getSessionName() {
   sessionName = ''
-  const { a, b, t } = get_app_config()
+  const { a, b } = get_app_config()
   const x = a + b + 40
-  const y = 40
+  const y = 40 // 名称在顶部下来40px位置
   await mouse.move(straightTo(new Point(x, y)))
   await mouse.rightClick()
   await keyboard.pressKey(Key.LeftControl, Key.C)
@@ -84,7 +84,7 @@ const moveToMessage = async () => {
   const { a, b, t } = get_app_config()
   const x = a + b + 12
   const x2 = a + b + 200
-  const y = t + 50
+  const y = t + 100 // 拉消息的位置，在top高度+100px的位置
   const height = await screen.height()
   await mouse.move(straightTo(new Point(x2, y)))
   await sleep(500)
@@ -300,7 +300,8 @@ async function handleScrollOrClick() {
   if (scroll && isScrollDown) {
     for (let index = 0; index < 6; index++) {
       scrollCount++
-      await mouse.scrollDown(5)
+      // TODO 暂时先不滚动了
+      // await mouse.scrollDown(5)
     }
     if (scrollCount >= 12) {
       isScrollDown = false
@@ -309,7 +310,8 @@ async function handleScrollOrClick() {
     handleStart()
   } else if (scroll && !isScrollDown) {
     for (let index = 0; index < 12; index++) {
-      await mouse.scrollUp(5)
+      // TODO 暂时先不滚动了
+      // await mouse.scrollUp(5)
     }
     scrollCount = 0
     isScrollDown = true

@@ -7,6 +7,8 @@ import { handleStart } from './tool-package/entry.js'
 import { checkColor } from './tool-package/check-color.js'
 import checkhotarea from './tool-package/check-hot-area.js'
 
+import { writeToClipboard } from './globals.js'
+
 import {
   setRunningStatus,
   setCheckhotareaStatus,
@@ -53,7 +55,7 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
@@ -66,9 +68,17 @@ app.whenReady().then(() => {
     }
     setRunningStatus(false, callback)
   })
+  const isSingel = globalShortcut.register('CommandOrControl+Shift+Q', () => {
+    // 在这里执行你想要的操作，比如关闭应用程序等
+    console.log('Ctrl+Shfit+Q is pressed')
+  })
 
   if (!ret) {
-    console.log('注册快捷键失败')
+    console.log('register Ctrl+Q failed')
+  }
+  if (!isSingel) {
+    await writeToClipboard('app already start')
+    app.exit(0)
   }
 
   // Default open or close DevTools by F12 in development
