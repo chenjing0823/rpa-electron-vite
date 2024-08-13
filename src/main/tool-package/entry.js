@@ -70,6 +70,7 @@ async function getSessionName() {
   await sleep(500)
 
   sessionName = await getClipboardContent()
+  await writeToClipboard('')
 }
 
 /**

@@ -75,7 +75,6 @@ function readCachedData() {
 }
 
 export const get_app_config = () => {
-  console.log('readCachedData', readCachedData())
   const { a, b, t } = readCachedData() || {}
   return {
     a: a || a_width,
