@@ -2,15 +2,20 @@
 import HotAreaCheck from './hot-area-check.vue'
 import { debounce } from '../utils/index.js'
 import { ref, computed } from 'vue'
+import { ElButton } from 'element-plus'
 
 const checkhotarea = ref(false)
 const startFlag = ref(false)
 const a_width = ref(0)
 const b_width = ref(0)
 const t_height = ref(0)
+const loading = ref(false)
 
 window.electronAPI.onUpdateStart((value) => {
-  startFlag.value = value
+  setTimeout(() => {
+    startFlag.value = value
+    loading.value = false
+  }, 500)
 })
 
 window.electronAPI.onTriggelAxios(async () => {})
@@ -29,12 +34,13 @@ const textHotarea = computed(() => {
   return checkhotarea.value ? '关闭热区检查' : '列表热区检查'
 })
 
-const ipcHandleSend = debounce((val) => {
+const ipcHandleSend = (val) => {
+  loading.value = true
   if (checkhotarea.value) {
-    ipcHandleCheckhotarea(checkhotarea.value)
+    window.api.apiCheckhotarea({ type: 'flag', val: checkhotarea.value })
   }
   window.api.apiStart({ val: val, env: process.env.NODE_ENV })
-}, 500)
+}
 
 const ipcHandleCheckhotarea = debounce(
   (val) => window.api.apiCheckhotarea({ type: 'flag', val: val }),
@@ -44,15 +50,13 @@ const ipcHandleCheckhotarea = debounce(
 <template>
   <img alt="logo" class="logo" src="../assets/xbb-logo.png" />
   <div class="creator">销帮帮 RPA</div>
-  <div class="actions">
-    <div class="action">
-      <a target="_blank" rel="noreferrer" @click="ipcHandleSend(startFlag)">{{ textSartchat }}</a>
-    </div>
-    <div class="action">
-      <a target="_blank" rel="noreferrer" @click="ipcHandleCheckhotarea(checkhotarea)">{{
-        textHotarea
-      }}</a>
-    </div>
+  <div>
+    <el-button type="primary" :loading="loading" @click="ipcHandleSend(startFlag)">{{
+      textSartchat
+    }}</el-button>
+    <el-button type="primary" @click="ipcHandleCheckhotarea(checkhotarea)">{{
+      textHotarea
+    }}</el-button>
   </div>
   <div class="adjust-block">
     <HotAreaCheck

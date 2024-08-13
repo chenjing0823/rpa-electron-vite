@@ -75,13 +75,6 @@ code {
   padding: 16px 0;
 }
 
-.actions {
-  display: flex;
-  padding-top: 32px;
-  margin: -6px;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-}
 
 .adjust-block {
   color: #969799;
@@ -92,29 +85,6 @@ code {
 .action {
   flex-shrink: 0;
   padding: 6px;
-}
-
-.action a {
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  border: 1px solid transparent;
-  text-align: center;
-  font-weight: 600;
-  white-space: nowrap;
-  border-radius: 20px;
-  padding: 0 20px;
-  line-height: 38px;
-  font-size: 14px;
-  border-color: #ff6a00;
-  color: #ffffff;
-  background-color: #ff6a00;
-}
-
-.action a:hover {
-  border-color: #ff8c2e;
-  color: #ffffff;
-  background-color: #ff8c2e;
 }
 
 .running-status {

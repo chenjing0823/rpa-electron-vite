@@ -313,6 +313,8 @@ async function handleScrollOrClick() {
       // TODO 暂时先不滚动了
       // await mouse.scrollUp(5)
     }
+    // TODO 暂时先不滚动了 加一个sleep
+    await sleep(1000)
     scrollCount = 0
     isScrollDown = true
     handleStart()
