@@ -18,6 +18,6 @@ const showStatus = computed(() => {
 <template>
   <div class="running-status">
     <span>运行状态：{{ showStatus }}, 当前环境：{{ nowenv }}</span>
-    <span>版本：1.1.4</span>
+    <span>版本：1.1.5</span>
   </div>
 </template>

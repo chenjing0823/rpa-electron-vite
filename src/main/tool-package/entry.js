@@ -45,7 +45,16 @@ let intervalFlag = true
 const moveToRoot = async () => {
   const { a, b, t } = get_app_config()
   await mouse.move(straightTo(new Point(a + b / 2, t + 50)))
-  // await mouse.move(straightTo(centerOf(new Region(a, t, b, 70))))
+  await sleep(500)
+  const color = await screen.colorAt(new Point(a + 10, t + 10))
+  if (color.R === 215 && color.G === 232 && color.B === 253) {
+    // 如果正在直播 则关闭直播提示
+    mouse.move(straightTo(new Point(a + b - 20, t + 16)))
+    await sleep(500)
+    await mouse.leftClick()
+    await mouse.move(straightTo(new Point(a + b / 2, t + 50)))
+    await sleep(500)
+  }
   await mouse.leftClick()
 }
 
@@ -53,6 +62,7 @@ const moveToRoot = async () => {
  * 获取对话名称
  */
 async function getSessionName() {
+  await writeToClipboard('')
   sessionName = ''
   const { a, b } = get_app_config()
   const x = a + b + 40
@@ -337,7 +347,7 @@ async function handleScrollOrClick() {
 const handleStart = async () => {
   if (getRunningStatus()) {
     await moveToRoot()
-    await handleScrollOrClick()
+    // await handleScrollOrClick()
   } else {
     console.log('stop server')
     return false
