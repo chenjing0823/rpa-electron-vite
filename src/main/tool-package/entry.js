@@ -347,7 +347,7 @@ async function handleScrollOrClick() {
 const handleStart = async () => {
   if (getRunningStatus()) {
     await moveToRoot()
-    // await handleScrollOrClick()
+    await handleScrollOrClick()
   } else {
     console.log('stop server')
     return false
